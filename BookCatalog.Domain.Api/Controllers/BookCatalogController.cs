@@ -1,5 +1,6 @@
 ﻿using BookCatalog.Domain.Entities;
 using BookCatalog.Domain.Enums;
+using BookCatalog.Domain.Filters;
 using BookCatalog.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,44 +11,57 @@ namespace BookCatalog.Domain.Api.Controllers
     public class BookCatalogController : ControllerBase
     {
         private readonly IBookCatalogService _bookCatalogService;
+        private readonly IShippingService _shippingService;
 
         public BookCatalogController(
-            IBookCatalogService bookCatalogService)
+            IBookCatalogService bookCatalogService,
+            IShippingService shippingService)
         {
             _bookCatalogService = bookCatalogService;
+            _shippingService = shippingService;
         }
 
-        // GET: api/<BookCatalogController>
-        [HttpGet("books")]
-        public ActionResult<List<Book>> GetAllBookCatalogs(PriceOrderEnum priceOrder = PriceOrderEnum.Asc)
+        /// <summary>
+        /// Retorna catálogo de livros convertido do JSON, com escolha de ordenação.
+        /// </summary>
+        /// <param name="priceOrder"></param>
+        /// <returns></returns>
+        [HttpGet("book-catalog")]
+        public ActionResult<List<Book>> GetBookCatalog(
+            [FromQuery]PriceOrderEnum priceOrder = PriceOrderEnum.ASC)
         {
-            var bookList = _bookCatalogService.GetBooks(priceOrder);
-            return Ok(bookList);
+            var bookCatalog = _bookCatalogService.GetBooks(priceOrder);
+            return Ok(bookCatalog);
         }
 
-        // GET api/<BookCatalogController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        /// <summary>
+        /// Retorna catálogo de livros baseado nas opções de filtros aplicados.
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="priceOrder"></param>
+        /// <returns></returns>
+        [HttpGet("book-catalog-filter")]
+        public ActionResult<List<Book>> GetBookCatalogFiltered(
+            [FromQuery]BookCatalogFilter filter, PriceOrderEnum priceOrder = PriceOrderEnum.ASC)
         {
-            return "value";
+            var bookCatalog = _bookCatalogService.GetBooksByFilter(filter, priceOrder);
+            return Ok(bookCatalog);
         }
 
-        // POST api/<BookCatalogController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        /// <summary>
+        /// Retorna um determinado livro com o valor do frete calculado.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("book-shipping")]
+        public ActionResult<Book> GetBookShipping(int id)
         {
-        }
+            var book = _bookCatalogService.GetBookBy(id);
 
-        // PUT api/<BookCatalogController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+            if (book == null) { return NoContent(); }
 
-        // DELETE api/<BookCatalogController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var bookShipping = _shippingService.CalculateShipping(book.Price);
+            return Ok(new { bookShipping, book });
         }
     }
 }

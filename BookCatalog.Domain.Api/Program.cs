@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Text.Json.Serialization;
+using BookCatalog.Domain.Enums;
 using BookCatalog.Domain.Infra.Repositories;
 using BookCatalog.Domain.Interfaces.Repositories;
 using BookCatalog.Domain.Interfaces.Services;
@@ -15,9 +17,16 @@ builder.Services.Configure<MvcJsonOptions>(o => o.JsonSerializerOptions.Converte
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName), true);
+});
+
 builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IBookCatalogService, BookCatalogService>();
+builder.Services.AddScoped<IShippingService, ShippingService>();
 
 var app = builder.Build();
 

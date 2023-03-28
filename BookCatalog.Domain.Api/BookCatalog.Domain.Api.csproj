@@ -1,19 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BookCatalog.Domain\BookCatalog.Domain.csproj" />
-    <ProjectReference Include="..\BookCatalog.Domain.Infra\BookCatalog.Domain.Infra.csproj" />
-    <ProjectReference Include="..\BookCatalog.Domain.Services\BookCatalog.Domain.Services.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\BookCatalog.Domain\BookCatalog.Domain.csproj" />
+		<ProjectReference Include="..\BookCatalog.Domain.Infra\BookCatalog.Domain.Infra.csproj" />
+		<ProjectReference Include="..\BookCatalog.Domain.Services\BookCatalog.Domain.Services.csproj" />
+	</ItemGroup>
 
 </Project>

@@ -9,7 +9,7 @@ namespace BookCatalog.Domain.Enums
 {
     public enum PriceOrderEnum
     {
-        Asc = 1,
-        Desc = 2
+        ASC = 1,
+        DESC = 2
     }
 }
